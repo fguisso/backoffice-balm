@@ -1,6 +1,6 @@
-![Backoffice-balm](https://github.com/user-attachments/assets/361a9c68-05d1-4e2e-9906-25179d117f9e)
-
 # BackOFFice Balm  
+
+![Backoffice-balm](https://github.com/user-attachments/assets/361a9c68-05d1-4e2e-9906-25179d117f9e)
 
 *Soothe your spine—and your spreadsheets.*
 
@@ -55,12 +55,12 @@ Because we dynamically resolve `userManager[ action ]` without validation, you c
 
 ```bash
 # Create a test user
-curl -X POST localhost:3000/v1/user/42/create_user \
+curl -X POST localhost:3000/v1/user/42/create \
   -H "Content-Type: application/json" \
   -d '{"name":"Bob","cellphone":"+55"}'
 
 # Exploit: delete without auth
-curl -X GET localhost:3000/v1/user/42/_admin_delete_user
+curl -X GET localhost:3000/v1/user/42/_admin_delete
 ```
 
 ## Your Challenge
