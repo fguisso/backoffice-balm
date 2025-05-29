@@ -1,4 +1,7 @@
+![Backoffice-balm](https://github.com/user-attachments/assets/361a9c68-05d1-4e2e-9906-25179d117f9e)
+
 # BackOFFice Balm  
+
 *Soothe your spine—and your spreadsheets.*
 
 ## Introduction  
