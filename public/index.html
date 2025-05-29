@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BackOFFice Balm</title>
+  <style>
+    /* --- Reset & Base --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 { margin-bottom: 0.5rem; }
+    p { margin-bottom: 1.5rem; font-style: italic; }
+
+    /* --- Containers --- */
+    section {
+      background: #fff;
+      width: 100%; max-width: 500px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* --- Form Controls --- */
+    label { margin-bottom: 0.75rem; display: block; }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccd0d5;
+      border-radius: 4px;
+      margin-top: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    /* --- Buttons --- */
+    button {
+      background: #0052cc;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-top: 0.75rem;
+    }
+    button:hover { background: #0041a8; }
+
+    /* --- Output area --- */
+    pre {
+      background: #f9fbfd;
+      border: 1px solid #e1e4e8;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      max-height: 200px;
+      overflow: auto;
+      font-size: 0.9rem;
+      white-space:pre-line;
+    }
+
+    .logo-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="BackOFFice Balm Logo" class="logo-circle" />
+  <h1>BackOFFice Balm</h1>
+  <p>Soothe your spine—and your spreadsheets.</p>
+
+  <section>
+    <h2>Create or Get Info</h2>
+    <label>ID:
+      <input id="uid" placeholder="e.g. user123" />
+    </label>
+    <label>Name (for create):
+      <input id="uname" placeholder="Alice" />
+    </label>
+    <label>Cellphone (for create):
+      <input id="ucell" placeholder="+55 84 99999-0000" />
+    </label>
+    <label>Action:
+      <select id="action">
+        <option value="create">create_user</option>
+        <option value="get_info">get_user_info</option>
+      </select>
+    </label>
+    <button onclick="callApi()">Send</button>
+    <pre id="result"></pre>
+  </section>
+
+  <section>
+    <h2>Admin Controls</h2>
+    <!-- Delete -->
+    <label>Delete User ID:
+      <input id="delid" placeholder="user123" />
+    </label>
+    <button onclick="adminDelete()">Delete User</button>
+
+    <!-- List All -->
+    <button style="margin-left:1rem;" onclick="adminList()">List All Users</button>
+    <pre id="adminListRes"></pre>
+  </section>
+
+  <script>
+    async function callApi() {
+      const id = uid.value.trim();
+      const methodName = action.value;
+      const body = {};
+      if (methodName === 'create') {
+        body.name = uname.value.trim();
+        body.cellphone = ucell.value.trim();
+      }
+      const httpMethod = methodName === 'get_info' ? 'GET' : 'POST';
+      const url = `/v1/user/${encodeURIComponent(id)}/${methodName}`;
+      const opts = {
+        method: httpMethod,
+        headers: { 'Content-Type': 'application/json' }
+      };
+      if (httpMethod === 'POST') opts.body = JSON.stringify(body);
+      const res = await fetch(url, opts);
+      result.textContent = await res.text();
+    }
+
+    async function adminDelete() {
+      const id = delid.value.trim();
+      const cred = prompt('Admin user:pass');
+      const res = await fetch(`/v1/user/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Basic ' + btoa(cred) }
+      });
+      adminListRes.textContent = await res.text();
+    }
+
+    async function adminList() {
+      const cred = prompt('Admin user:pass');
+      const res = await fetch('/v1/user/list', {
+        method: 'GET',
+        headers: { 'Authorization': 'Basic ' + btoa(cred) }
+      });
+      adminListRes.textContent = await res.text();
+    }
+  </script>
+</body>
+</html>
+
