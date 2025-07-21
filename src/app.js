@@ -10,14 +10,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Dynamic method calls based on route param (unvalidated)
 app.route('/v1/user/:id/:action')
-  .get(function(req, res) {
-    try {
+  .get((req, res) => {
       const { id, action } = req.params;
       const result = userManager[action]({ id, ...req.body });
       res.json(result);
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
   })
   .post((req, res) => {
     try {
